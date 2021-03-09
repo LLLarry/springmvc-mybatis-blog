@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+">
+    <!-- 1、扫描com.larry.service下的所有使用注解的类 -->
+    <context:component-scan base-package="com.larry.service" />
+
+    <!-- 2、将我们的所有业务类，注入到Spring,可以通过设置，或者注解实现，这里使用注解 -->
+    <!--<bean id="booksServerImpl" class="com.larry.service.BooksServerImpl">
+        <property name="booksMapper" ref="booksMapper"></property>
+    </bean>-->
+
+    <!-- 3、声明式事务配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!-- 4、aop事务支持 -->
+</beans>

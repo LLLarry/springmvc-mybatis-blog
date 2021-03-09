@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+    ">
+
+    <!-- 1、引入database.properties -->
+    <context:property-placeholder location="classpath:database.properties" />
+
+    <!-- 2、管理DataSource数据源 这里使用c3p0-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driverClass}"></property>
+        <property name="jdbcUrl" value="${jdbc.url}"></property>
+        <property name="user" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="maxPoolSize" value="30"></property>
+        <property name="minPoolSize" value="10"></property>
+        <!-- 关闭后不自动提交 -->
+        <property name="autoCommitOnClose" value="false"></property>
+        <!-- 获取连接超时时间 -->
+        <property name="checkoutTimeout" value="10000"></property>
+        <!-- 当获取连接失败重试连接次数 -->
+        <property name="acquireRetryAttempts" value="2"></property>
+    </bean>
+
+    <!-- 3、管理SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+    </bean>
+
+    <!-- 4、配置dao接口扫描包,实现了dao接口可以注入spring容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory
+            sqlSessionFactoryBeanName: value 将bean的id传过去
+            sqlSessionFactory： ref  将bean的对象传进去
+        -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <!--        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>-->
+        <!-- 配置要扫描的包 -->
+        <property name="basePackage" value="com.larry.dao"></property>
+    </bean>
+</beans>
